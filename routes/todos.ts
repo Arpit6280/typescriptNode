@@ -15,14 +15,24 @@ router.post("/todo", (req, res, next) => {
     text: req.body.text,
   };
   todos.push(newTodo);
-  res.status(200).json({ todos: todos });
+  return res.status(200).json({ todos: todos });
+});
+
+router.put("/todo/:todoId", (req, res, next) => {
+  const tid = req.params.todoId;
+  const todoIndex = todos.findIndex((todo) => todo.id === tid);
+  if (todoIndex >= 0) {
+    todos[todoIndex] = { id: todos[todoIndex].id, text: req.body.text };
+    return res.status(200).json({ message: "updated todo", todos: todos });
+  }
+  res.status(404).json({ message: "not found" });
 });
 
 router.delete("/todo/delete", (req, res, next) => {
   let id: any = req.body.id;
   let index: number = todos.findIndex((todo) => todo.id === id);
   todos.slice(index, index + 1);
-  res.status(200).json({ todos: todos });
+  return res.status(200).json({ message: "deleted todo" });
 });
 
 export default router;
